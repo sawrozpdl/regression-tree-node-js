@@ -1,7 +1,5 @@
-import { average, cov, standardDeviation } from "./utils/math.js";
-import { getValues, uniqueValues } from "./utils/data.js";
 import * as file from "./utils/file.js";
-import { isNumber } from "./utils/string.js";
+import { BranchNode, LeafNode, Condition } from "./models/index.js";
 
 async function main() {
   const TRAINING_DATA_PATH = "./data/train.csv";
@@ -9,30 +7,40 @@ async function main() {
 
   const rawData = await file.readFileAsText(TRAINING_DATA_PATH);
 
-  console.log(rawData);
-
   const [headers, rows] = file.csvToDS(rawData, false);
 
   console.log(headers, rows);
 
-  const values = getValues(rows);
+  const ques1 = new Condition(1, "Hot");
+  const ques2 = new Condition(1, "Mild");
+  const ques3 = new Condition(1, "Cool");
 
-  console.log("values: ", values); //  [25, 30, 46, 45, 52, 23, 43, 35, 38, 46, 48, 52, 44, 30]
+  console.log(ques2.toString(headers)); // Temperature is Mild?
+
+  const leaf = new LeafNode(rows);
+
+  const left = new BranchNode(ques2, leaf, leaf);
+  const right = new BranchNode(ques3, leaf, leaf);
+  const first = new BranchNode(ques1, left, right);
 
   console.log(
-    "avg: ",
-    average(values), // 39.785714285714285
-    "sd: ",
-    standardDeviation(values), // 9.321086474291743
-    "cv: ",
-    cov(values) // 23.428224531433468
-  );
-
-  headers.forEach((header, ind) => {
-    console.log(`${header[ind]}: `, uniqueValues(rows, ind)); // eg: e:  [ 'Hot', 'Mild', 'Cool' ]
-  });
-
-  console.log(isNumber("5"), isNumber(5), isNumber("b")); // True True False
+    first.condition.satisfies(["Sunny", "Cool", "Normal", "True", "23"]),
+    first.trueNode.condition.satisfies([
+      "Sunny",
+      "Cool",
+      "Normal",
+      "True",
+      "23",
+    ]),
+    first.falseNode.condition.satisfies([
+      "Sunny",
+      "Cool",
+      "Normal",
+      "True",
+      "23",
+    ]),
+    first.trueNode.trueNode.value
+  ); // false false true 39.785714285714285
 }
 
 main();
