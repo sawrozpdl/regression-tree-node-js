@@ -1,0 +1,28 @@
+{
+  "name": "regression-tree",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A regression tree implementation using nodejs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sawrozpdl/regression-tree-node-js.git"
+  },
+  "keywords": [
+    "regression",
+    "node",
+    "js",
+    "decision",
+    "tree"
+  ],
+  "author": "Saroj Paudyal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sawrozpdl/regression-tree-node-js/issues"
+  },
+  "homepage": "https://github.com/sawrozpdl/regression-tree-node-js#readme"
+}
