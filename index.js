@@ -2,27 +2,31 @@ import * as file from "./utils/file.js";
 import { logJson } from "./utils/data.js";
 import { DecisionTree } from "./models/index.js";
 
-const DATA_SCOPE = "hoursPlayed";
+const DATA_FOLDER = "hoursPlayed";
 
 async function main() {
-  const TRAINING_DATA_PATH = `./data/${DATA_SCOPE}/train.csv`;
-  const TESTING_DATA_PATH = `./data/${DATA_SCOPE}/test.csv`;
+  const TRAINING_DATA_PATH = `./data/${DATA_FOLDER}/train.csv`;
+  const TESTING_DATA_PATH = `./data/${DATA_FOLDER}/test.csv`;
 
-  const rawData = await file.readFileAsText(TRAINING_DATA_PATH);
+  const rawTrainingData = await file.readFileAsText(TRAINING_DATA_PATH);
+  const rawTestingData = await file.readFileAsText(TESTING_DATA_PATH);
 
-  const [headers, rows] = file.csvToDS(rawData, false);
+  const [headers, trainingRows] = file.csvToDS(rawTrainingData, false);
+  const [ignored, testingRows] = file.csvToDS(rawTestingData, false);
 
   const regressionTree = new DecisionTree(headers);
 
-  regressionTree.train(rows);
-
-  const testy = ["Rainy", "Hot", "High", "True"];
-
-  console.log("Predicted: ", regressionTree.predict(testy));
-
-  regressionTree.test(rows);
+  regressionTree.train(trainingRows);
 
   logJson(regressionTree.getJson());
+
+  const testy = ["Sunny", "Hot", "High", "False"];
+
+  console.log("For: ", testy, ", Predicted: ", regressionTree.predict(testy));
+
+  regressionTree.test(testingRows);
+
+  regressionTree.info();
 }
 
 main();

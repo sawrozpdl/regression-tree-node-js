@@ -98,6 +98,8 @@ class DecisionTree {
 
         log(depth, "trueRows: ", trueRows, "falseRows", falseRows);
 
+        // We skip if the rows are biased (true/false) to single properties as we could be already inside the
+        // biased parent property. also, the same values rows won't matter much in the tree if so happens.
         if (trueRows.length === 0 || falseRows.length === 0) {
           continue;
         }
@@ -168,7 +170,15 @@ class DecisionTree {
 
     log(0, "Correct Values: ", values, "Predicted values: ", predictions);
 
-    //TODO: testing logic.
+    let squaredErrorSum = 0;
+
+    values.forEach((value, index) => {
+      squaredErrorSum += Math.pow(value - predictions[index], 2);
+    });
+
+    this.testResults = {
+      "Mean Square Error: ": squaredErrorSum / values.length,
+    };
   }
 
   /**
@@ -258,7 +268,7 @@ class DecisionTree {
    * Displays the testing results of the current model.
    */
   info() {
-    Object.values(this.testResults).forEach((key) => {
+    Object.keys(this.testResults).forEach((key) => {
       console.log(`${key}: ${this.testResults[key]}`);
     });
   }
