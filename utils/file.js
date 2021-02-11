@@ -1,5 +1,12 @@
 import fs from "fs";
 
+/**
+ * Splits the string considering the ignoring character.
+ *
+ * @param {String} str
+ * @param {String} by
+ * @param {String} limit
+ */
 function smartSplit(str, by, limit) {
   let ignore = false;
   const acc = [];
@@ -24,10 +31,22 @@ function smartSplit(str, by, limit) {
   return acc;
 }
 
+/**
+ * Removes unnecessary line breaks from strings.
+ *
+ * @param {String} str
+ */
 function cleanString(str) {
   return str ? str.replace(/[\r\n]+/gm, "") : str;
 }
 
+/**
+ * Converts the CSV string to data structure.
+ *
+ * @param {String} csv
+ * @param {Boolean} objectMode
+ * @param {Array<String>} dataHeaders
+ */
 export function csvToDS(csv, objectMode = true, dataHeaders = null) {
   const [firstLine, ...lines] = csv.split("\n");
 
@@ -52,6 +71,11 @@ export function csvToDS(csv, objectMode = true, dataHeaders = null) {
     : [keys, lines.map((line) => smartSplit(line, ",", '"'))];
 }
 
+/**
+ * Reads the file from given location as text.
+ *
+ * @param {String} path
+ */
 export function readFileAsText(path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, "utf8", function (error, data) {
